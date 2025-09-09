@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AR Camera Test</title>
+    <style src="aframe.css"></style>
+ <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-physics-system@4.0.1/dist/aframe-physics-system.min.js"></script>
+
+    <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js",
+      "three/examples/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/",
+      "aframe ": "https://aframe.io/releases/1.5.0/aframe.min.js",
+      "aframe-physics-system": "https://cdn.jsdelivr.net/npm/aframe-physics-system@4.0.1/dist/aframe-physics-system.min.js"
+    }
+  }
+</script>
+</head>
+<body>
+    <!--<header>
+        <h1>TP3 Navigation</h1>
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li tag="navlink"><a href="index.html">Three.js</a></li>
+                <li tag="navlink"><a href="aframe.html">A-Frame</a></li>
+            </ul>
+        </nav>
+    </header>-->
+    <a-scene physics="gravity: -9.8; debug: false">
+    
+    <!-- Ground -->
+    <a-plane position="0 0 0" rotation="-90 0 0" width="200" height="200" color="#7BC8A4" static-body>
+    </a-plane>
+
+    <!-- Player Cube -->
+    <a-box id="player"position="0 1 0"
+      width="1" height="1" depth="1"
+      color="#4CC3D9"
+      dynamic-body="mass: 1; linearDamping: 0.2; angularDamping: 0.9">
+    </a-box>
+
+    <!-- Camera -->
+    <a-entity camera position="0 5 8" look-controls></a-entity>
+
+    <!-- Lighting -->
+    <a-entity light="type: directional; intensity: 1" position="5 10 5"></a-entity>
+    <a-entity light="type: ambient; intensity: 0.4"></a-entity>
+
+  </a-scene>
+    <script type="module" src="aframe.js"></script>
+</body>
+</html>

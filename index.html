@@ -2,12 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Web3D Test</title>
+    <title>Three.js-Web3D</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js",
+      "three/examples/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/"
+    }
+  }
+</script>
 </head>
 <body>
-       <script type="module" src="main.js"></script>
+    <header>
+        <h1>TP3 Navigation</h1>
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li tag="navlink"><a href="index.html">Three.js</a></li>
+                <li tag="navlink"><a href="aframe.html">A-Frame</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <script type="module" src="main.js"></script>
 </body>
 </html>
