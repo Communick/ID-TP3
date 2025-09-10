@@ -1,41 +1,66 @@
-import * as THREE from 'three';
-
-// Wait for A-Frame to load
-AFRAME.registerComponent('player-movement', {
+AFRAME.registerComponent('player-controls', {
   init: function () {
-
-const player = document.querySelector('#player');
+    const el = this.el;
     const speed = 5;       // movement speed
-    const jumpStrength = 5; // jump velocity
+    const jumpForce = 5;   // jump strength
     let canJump = false;
 
-    // Detect when player touches the ground
-    player.addEventListener('collide', (e) => {
+    // Track which keys are pressed
+    this.keys = {};
+    window.addEventListener('keydown', e => this.keys[e.code] = true);
+    window.addEventListener('keyup', e => this.keys[e.code] = false);
+
+    // Physics body setup
+    el.addEventListener('body-loaded', () => {
+      el.body.fixedRotation = true;          // lock rotation
+      el.body.updateMassProperties();
+      el.body.linearDamping = 0.9;           // smooth slowdown when keys are released
+    });
+
+    // Ground detection
+    el.addEventListener('collide', (e) => {
       if (e.detail.body.el.tagName === 'A-PLANE') {
         canJump = true;
       }
     });
 
-    document.addEventListener('keydown', (e) => {
-      const body = player.body; // cannon.js body
-      if (!body) return;
+    this.canJump = () => canJump;
+    this.resetJump = () => { canJump = false; };
+    this.speed = speed;
+    this.jumpForce = jumpForce;
+  },
 
-      if (e.code === 'KeyW') body.velocity.z = -speed;
-      if (e.code === 'KeyS') body.velocity.z = speed;
-      if (e.code === 'KeyA') body.velocity.x = -speed;
-      if (e.code === 'KeyD') body.velocity.x = speed;
+  tick: function () {
+    const el = this.el;
+    const body = el.body;
+    const keys = this.keys;
+    if (!body) return;
 
-      if (e.code === 'Space' && canJump) {
-        body.velocity.y = jumpStrength;
-        canJump = false;
-      }
-    });
+    // Movement direction
+    let moveX = 0;
+    let moveZ = 0;
 
-    document.addEventListener('keyup', (e) => {
-      const body = player.body;
-      if (!body) return;
+    if (keys["KeyW"]) moveZ -= 1;
+    if (keys["KeyS"]) moveZ += 1;
+    if (keys["KeyA"]) moveX -= 1;
+    if (keys["KeyD"]) moveX += 1;
 
-      if (['KeyW','KeyS'].includes(e.code)) body.velocity.z = 0;
-      if (['KeyA','KeyD'].includes(e.code)) body.velocity.x = 0;
-    });
-}});
+    // Normalize diagonal movement
+    if (moveX !== 0 || moveZ !== 0) {
+      const len = Math.sqrt(moveX * moveX + moveZ * moveZ);
+      moveX /= len;
+      moveZ /= len;
+    }
+
+    // Apply smooth velocity
+    body.velocity.x = moveX * this.speed;
+    body.velocity.z = moveZ * this.speed;
+
+    // Jump
+    if (keys["Space"] && this.canJump()) {
+      body.velocity.y = this.jumpForce;
+      this.resetJump();
+    }
+  }
+});
+document.querySelector('#player').setAttribute('player-controls', '');
